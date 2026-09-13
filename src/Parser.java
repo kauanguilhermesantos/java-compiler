@@ -1,4 +1,4 @@
-public class Parser {
+/* public class Parser {
 
     private Scanner scan;
     private char currentToken;
@@ -52,4 +52,4 @@ public class Parser {
         expr();
     }
 
-}
+} */
