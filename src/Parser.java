@@ -1,26 +1,45 @@
 public class Parser {
-    private byte[] input;
-    private int current;
 
-    public Parser (byte[] input) {
-        this.input = input;
+    private Scanner scan;
+    private char currentToken;
+
+    public Parser(byte[] input) {
+        scan = new Scanner(input);
+        currentToken = scan.nextToken();
     }
 
-    public void parse () {
-        expr();
+    private void nextToken () {
+        currentToken = scan.nextToken();
     }
 
-    private char peek () {
-        if (current < input.length)
-            return (char)input[current];
-        return '\0';
+    private void match(char t) {
+        if (currentToken == t) {
+            nextToken();
+        }else {
+            throw new Error("syntax error");
+        }
     }
 
-    private void match (char c) {
-        if (c == peek()) {
-            current++;
+    void digit () {
+        if (Character.isDigit(currentToken)) {
+            System.out.println("push " + currentToken);
+            match(currentToken);
         } else {
             throw new Error("syntax error");
+        }
+    }
+
+    void oper () {
+        if (currentToken == '+') {
+            match('+');
+            digit();
+            System.out.println("add");
+            oper();
+        } else if (currentToken == '-') {
+            match('-');
+            digit();
+            System.out.println("sub");
+            oper();
         }
     }
 
@@ -29,28 +48,8 @@ public class Parser {
         oper();
     }
 
-    void digit () {
-        if (Character.isDigit(peek())) {
-            System.out.println("push " + peek());
-            match(peek());
-        } else {
-            throw new Error("syntax error");
-        }
+    public void parse () {
+        expr();
     }
 
-
-
-    void oper () {
-        if (peek() == '+') {
-            match('+');
-            digit();
-            System.out.println("add");
-            oper();
-        } else if (peek() == '-') {
-            match('-');
-            digit();
-            System.out.println("sub");
-            oper();
-        }
-    }
 }
