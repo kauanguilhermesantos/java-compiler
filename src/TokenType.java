@@ -1,6 +1,6 @@
 
 public enum TokenType {
-    PLUS,MINUS, EQ, SEMICOLON,
+    PLUS,MINUS, EQ, SEMICOLON, PRINT,
 
     // Literals.
     NUMBER,
