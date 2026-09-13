@@ -31,14 +31,14 @@ public class Scanner {
     }
 
     public Token nextToken () {
+        skipWhitespace();
         char ch = peek();
+
         if (ch == '0') {
             advance();
             return new Token (TokenType.NUMBER, Character.toString(ch));
         }  else if (Character.isDigit(ch))
             return number();
-
-
 
         switch (ch) {
             case '+':
@@ -54,4 +54,11 @@ public class Scanner {
         }
     }
 
+    private void skipWhitespace() {
+        char ch = peek();
+        while (ch == ' ' || ch == '\r' || ch == '\t' || ch == '\n') {
+            advance();
+            ch = peek();
+        }
+    }
 }
