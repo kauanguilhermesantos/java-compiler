@@ -26,64 +26,66 @@ public class Parser {
         output.append("push ")
                 .append(currentToken.lexeme)
                 .append("\n");
-
         match(TokenType.NUMBER);
     }
 
-    void oper() {
-        if (currentToken.type == TokenType.PLUS) {
-
-            match(TokenType.PLUS);
-            term();
-
-            output.append("add\n");
-
-            oper();
-
-        } else if (currentToken.type == TokenType.MINUS) {
-
-            match(TokenType.MINUS);
-            term();
-
-            output.append("sub\n");
-
-            oper();
-        }
-    }
-
-    void expr() {
-        term();
-        oper();
-    }
-
-    void term() {
-
+    void factor() {
         if (currentToken.type == TokenType.NUMBER) {
-
             number();
-
         } else if (currentToken.type == TokenType.IDENT) {
-
             output.append("push ")
                     .append(currentToken.lexeme)
                     .append("\n");
-
             match(TokenType.IDENT);
-
         } else {
             throw new Error("syntax error");
         }
     }
 
+    void operMulDiv() {
+        if (currentToken.type == TokenType.MULT) {
+            match(TokenType.MULT);
+            factor();
+            output.append("mul\n");
+            operMulDiv();
+
+        } else if (currentToken.type == TokenType.DIV) {
+            match(TokenType.DIV);
+            factor();
+            output.append("div\n");
+            operMulDiv();
+        }
+    }
+
+    void term() {
+        factor();
+        operMulDiv();
+    }
+
+    void operAddSub() {
+        if (currentToken.type == TokenType.PLUS) {
+            match(TokenType.PLUS);
+            term();
+            output.append("add\n");
+            operAddSub();
+        } else if (currentToken.type == TokenType.MINUS) {
+            match(TokenType.MINUS);
+            term();
+            output.append("sub\n");
+            operAddSub();
+        }
+    }
+
+    void expr() {
+        term();
+        operAddSub();
+    }
+
     void letStatement() {
-
         match(TokenType.LET);
-
         var id = currentToken.lexeme;
-
         match(TokenType.IDENT);
         match(TokenType.EQ);
-
         expr();
 
         output.append("pop ")
@@ -94,34 +96,23 @@ public class Parser {
     }
 
     void printStatement() {
-
         match(TokenType.PRINT);
-
         expr();
-
         output.append("print\n");
-
         match(TokenType.SEMICOLON);
     }
 
     void statement() {
-
         if (currentToken.type == TokenType.PRINT) {
-
             printStatement();
-
         } else if (currentToken.type == TokenType.LET) {
-
             letStatement();
-
         } else {
-
             throw new Error("syntax error");
         }
     }
 
     void statements() {
-
         while (currentToken.type != TokenType.EOF) {
             statement();
         }

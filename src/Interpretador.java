@@ -12,11 +12,11 @@ class Command {
     public enum Type {
         ADD,
         SUB,
+        MUL,
+        DIV,
         PUSH,
         POP,
         PRINT
-
-        ;
     }
 
     public Command.Type type;
@@ -62,26 +62,39 @@ public class Interpretador {
         return new Command(commands.remove(0));
     }
 
-    public void run () {
+    public void run() {
+
         while (hasMoreCommands()) {
+
             var command = nextCommand();
+
             switch (command.type) {
                 case ADD:
                     var arg2 = stack.pop();
                     var arg1 = stack.pop();
-                    stack.push (arg1+arg2);
+                    stack.push(arg1 + arg2);
                     break;
                 case SUB:
                     arg2 = stack.pop();
                     arg1 = stack.pop();
-                    stack.push (arg1-arg2);
+                    stack.push(arg1 - arg2);
+                    break;
+                case MUL:
+                    arg2 = stack.pop();
+                    arg1 = stack.pop();
+                    stack.push(arg1 * arg2);
+                    break;
+                case DIV:
+                    arg2 = stack.pop();
+                    arg1 = stack.pop();
+                    stack.push(arg1 / arg2);
                     break;
                 case PUSH:
                     var value = variables.get(command.arg);
                     if (value != null) {
                         stack.push(value);
                     } else {
-                        stack.push (Integer.parseInt(command.arg));
+                        stack.push(Integer.parseInt(command.arg));
                     }
                     break;
                 case POP:
@@ -92,8 +105,6 @@ public class Interpretador {
                     var arg = stack.pop();
                     System.out.println(arg);
                     break;
-
-
             }
         }
     }
